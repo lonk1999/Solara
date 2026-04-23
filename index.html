@@ -591,20 +591,21 @@
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
-                    const isDarkMode = document.documentElement.classList.contains('dark-mode');
-                    canvas.style.opacity = isDarkMode ? '0.5' : '1';
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    canvas.style.opacity = isDarkMode ? '0.3' : '0';
+                    console.log('Theme changed. Dark mode:', isDarkMode);
                 }
             });
         });
 
-        observer.observe(document.documentElement, {
+        observer.observe(document.body, {
             attributes: true,
             attributeFilter: ['class']
         });
 
         // 初始化时设置一次
-        const isDarkMode = document.documentElement.classList.contains('dark-mode');
-        canvas.style.opacity = isDarkMode ? '0.5' : '1';
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        canvas.style.opacity = isDarkMode ? '0.3' : '0';
         console.log('Matrix rain initialized. Dark mode:', isDarkMode);
     })();
 </script>
