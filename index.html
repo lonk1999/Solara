@@ -101,7 +101,7 @@
 </head>
 <body>
     <div class="background-stage" id="backgroundStage">
-        <canvas id="matrixCanvas" class="matrix-rain" aria-hidden="true"></canvas>
+        <canvas id="matrixCanvas" class="matrix-rain"></canvas>
         <div class="background-stage__layer background-stage__layer--base" id="backgroundBaseLayer"></div>
         <div class="background-stage__layer background-stage__layer--transition" id="backgroundTransitionLayer"></div>
     </div>
@@ -534,21 +534,43 @@
         const ctx = canvas.getContext('2d');
         const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&*()+-=[]{}|;:,.<>?';
         const fontSize = 14;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = new Array(columns).fill(0);
+        let drops = [];
 
         // 设置canvas尺寸为窗口大小
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
+            // 先设置canvas样式尺寸为100%
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+
+            // 获取父容器尺寸
+            const parent = canvas.parentElement;
+            const rect = parent.getBoundingClientRect();
+            const style = window.getComputedStyle(parent);
+
+            // 考虑边框和内边距
+            const width = rect.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) - parseFloat(style.borderLeftWidth) - parseFloat(style.borderRightWidth);
+            const height = rect.height - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom) - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth);
+
+            // 设置canvas绘图缓冲区尺寸
+            canvas.width = Math.max(width, window.innerWidth);
+            canvas.height = Math.max(height, window.innerHeight);
+
+            // 重新初始化drops数组
+            const columns = Math.floor(canvas.width / fontSize);
+            drops = new Array(columns);
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * 100;
+            }
+
+            console.log('Canvas initialized to:', canvas.width, 'x', canvas.height, 'Columns:', columns);
+            return true;
         }
 
         // 绘制函数
         function draw() {
             // 检查画布是否有效
-            if (canvas.width === 0 || canvas.height === 0) {
-                console.warn('Canvas has zero dimensions, skipping draw');
+            if (canvas.width === 0 || canvas.height === 0 || drops.length === 0) {
+                console.warn('Canvas not ready, skipping draw');
                 return;
             }
 
@@ -588,18 +610,21 @@
             }
         }
 
-        // 初始化
-        resizeCanvas();
+        // 初始化 - 等待DOM加载完成
+        function init() {
+            if (resizeCanvas()) {
+                // 动画循环
+                let animationInterval = setInterval(draw, 50);
+                console.log('Animation interval started:', animationInterval);
+            }
+        }
 
-        // 动画循环
-        let animationInterval = setInterval(draw, 50);
-        console.log('Animation interval started:', animationInterval);
-
-        // 测试绘制
-        setTimeout(() => {
-            console.log('Testing draw function after 1 second');
-            draw();
-        }, 1000);
+        // 等待页面加载
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            setTimeout(init, 100);
+        }
 
         // 窗口大小改变时重新设置canvas
         window.addEventListener('resize', resizeCanvas);
@@ -609,11 +634,13 @@
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
                     const isDarkMode = document.body.classList.contains('dark-mode');
-                    canvas.style.opacity = isDarkMode ? '0.3' : '0';
+                    canvas.style.opacity = isDarkMode ? '0.6' : '0';
                     console.log('Theme changed. Dark mode:', isDarkMode, 'Canvas opacity:', canvas.style.opacity);
 
-                    // 强制重绘
-                    setTimeout(() => draw(), 100);
+                    // 如果切换到深色模式且canvas未初始化，则初始化
+                    if (isDarkMode && drops.length === 0) {
+                        resizeCanvas();
+                    }
                 }
             });
         });
@@ -625,11 +652,8 @@
 
         // 初始化时设置一次
         const isDarkMode = document.body.classList.contains('dark-mode');
-        canvas.style.opacity = isDarkMode ? '0.3' : '0';
+        canvas.style.opacity = isDarkMode ? '0.6' : '0';
         console.log('Matrix rain initialized. Dark mode:', isDarkMode, 'Canvas opacity:', canvas.style.opacity);
-
-        // 强制初始绘制
-        setTimeout(() => draw(), 500);
     })();
 </script>
 </body>
