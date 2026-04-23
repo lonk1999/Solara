@@ -526,7 +526,10 @@
 <script>
     (function initMatrixRain() {
         const canvas = document.getElementById('matrixCanvas');
-        if (!canvas) return;
+        if (!canvas) {
+            console.error('Matrix canvas not found!');
+            return;
+        }
 
         const ctx = canvas.getContext('2d');
         const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&*()+-=[]{}|;:,.<>?';
@@ -538,10 +541,17 @@
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
         }
 
         // 绘制函数
         function draw() {
+            // 检查画布是否有效
+            if (canvas.width === 0 || canvas.height === 0) {
+                console.warn('Canvas has zero dimensions, skipping draw');
+                return;
+            }
+
             // 半透明黑色背景，创建拖尾效果
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -583,6 +593,13 @@
 
         // 动画循环
         let animationInterval = setInterval(draw, 50);
+        console.log('Animation interval started:', animationInterval);
+
+        // 测试绘制
+        setTimeout(() => {
+            console.log('Testing draw function after 1 second');
+            draw();
+        }, 1000);
 
         // 窗口大小改变时重新设置canvas
         window.addEventListener('resize', resizeCanvas);
@@ -593,7 +610,10 @@
                 if (mutation.attributeName === 'class') {
                     const isDarkMode = document.body.classList.contains('dark-mode');
                     canvas.style.opacity = isDarkMode ? '0.3' : '0';
-                    console.log('Theme changed. Dark mode:', isDarkMode);
+                    console.log('Theme changed. Dark mode:', isDarkMode, 'Canvas opacity:', canvas.style.opacity);
+
+                    // 强制重绘
+                    setTimeout(() => draw(), 100);
                 }
             });
         });
@@ -606,7 +626,10 @@
         // 初始化时设置一次
         const isDarkMode = document.body.classList.contains('dark-mode');
         canvas.style.opacity = isDarkMode ? '0.3' : '0';
-        console.log('Matrix rain initialized. Dark mode:', isDarkMode);
+        console.log('Matrix rain initialized. Dark mode:', isDarkMode, 'Canvas opacity:', canvas.style.opacity);
+
+        // 强制初始绘制
+        setTimeout(() => draw(), 500);
     })();
 </script>
 </body>
