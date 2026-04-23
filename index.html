@@ -592,7 +592,7 @@
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
                     const isDarkMode = document.documentElement.classList.contains('dark-mode');
-                    canvas.style.opacity = isDarkMode ? '0.5' : '0';
+                    canvas.style.opacity = isDarkMode ? '0.5' : '1';
                 }
             });
         });
@@ -604,7 +604,7 @@
 
         // 初始化时设置一次
         const isDarkMode = document.documentElement.classList.contains('dark-mode');
-        canvas.style.opacity = isDarkMode ? '0.5' : '0';
+        canvas.style.opacity = isDarkMode ? '0.5' : '1';
         console.log('Matrix rain initialized. Dark mode:', isDarkMode);
     })();
 </script>
