@@ -97,8 +97,12 @@ body {
     z-index: -1;
 }
 
-.dark-mode .matrix-rain {
-    opacity: 0.3;
+/* 多种选择器确保覆盖所有情况 */
+.dark-mode .matrix-rain,
+body.dark-mode .matrix-rain,
+html.dark-mode .matrix-rain,
+html body.dark-mode .matrix-rain {
+    opacity: 0.3 !important;
 }
 
 .background-stage__layer {
