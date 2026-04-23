@@ -94,7 +94,7 @@ body {
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: -1;
+    z-index: 2;
 }
 
 /* 多种选择器确保覆盖所有情况 */
@@ -102,7 +102,40 @@ body {
 body.dark-mode .matrix-rain,
 html.dark-mode .matrix-rain,
 html body.dark-mode .matrix-rain {
-    opacity: 0.3 !important;
+    opacity: 0.6 !important;
+}
+
+/* 深色模式下背景层层级降低到canvas之下 */
+.dark-mode .background-stage__layer,
+body.dark-mode .background-stage__layer,
+html.dark-mode .background-stage__layer,
+html body.dark-mode .background-stage__layer {
+    z-index: 1 !important;
+}
+
+/* 深色模式下隐藏背景层，只显示代码雨 */
+.dark-mode .background-stage__layer--base,
+body.dark-mode .background-stage__layer--base,
+html.dark-mode .background-stage__layer--base,
+html body.dark-mode .background-stage__layer--base {
+    display: none !important;
+}
+
+/* 深色模式下mainContainer边框样式 */
+.dark-mode .container,
+body.dark-mode .container,
+html.dark-mode .container,
+html body.dark-mode .container {
+    border: 2px solid #006600 !important;
+    box-shadow: 0 0 15px rgba(0, 204, 0, 0.2) !important;
+}
+
+/* 深色模式下mainContainer透明度降低 */
+.dark-mode .container,
+body.dark-mode .container,
+html.dark-mode .container,
+html body.dark-mode .container {
+    background: rgba(30, 30, 30, 0.8) !important;
 }
 
 .background-stage__layer {
