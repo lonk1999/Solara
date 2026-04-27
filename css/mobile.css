@@ -68,12 +68,6 @@ body.mobile-view .background-stage {
         mask-position: center;
     }
 
-    /* 深色模式下取消遮罩，显示完整代码雨 */
-    body.mobile-view.dark-mode .background-stage {
-        -webkit-mask-image: none !important;
-        mask-image: none !important;
-    }
-
     body.mobile-view .background-stage__layer {
         transform: scale(1.12);
         filter: saturate(112%);
